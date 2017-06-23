@@ -1,0 +1,22 @@
+login 456123 1234
+ATM> -3 : Pin gresit
+login 456123 1234
+ATM> -3 : Pin gresit
+login 111789 8997
+ATM> Welcome Ionescu Georgeta
+logout
+ATM> Deconectare de la bancomat
+login 456123 1234
+ATM> -5 : Card blocat
+login 111789 8997
+ATM> Welcome Ionescu Georgeta
+logout
+ATM> Deconectare de la bancomat
+login 456123 8799
+ATM> -5 : Card blocat
+unlock
+UNLOCK> Trimite parola secreta
+qwerty
+UNLOCK> Client deblocat
+login 456123 8799
+ATM> Welcome Popovici George

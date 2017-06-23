@@ -1,0 +1,46 @@
+Bucur Ionut-Cristian,323CA
+
+Abordarea per total a acestei teme a implicat o abordare server authoritive,
+relativ asincrona(intrucat serverul nu ramane blocat dupa niciun request,dar 
+clientul asteapta dupa anumite requesturi diferite raspunsuri).
+
+#Client
+	-am folosit multiplexare intre stdin(pentru comenzile de la tastatura) si un
+socket TCP(pentru a putea primi comanda de quit de la server)
+	-pentru fiecare comanda, dupa citirea acesteia de la tastatura am trimis
+requestul corespunzator la server si am asteptat raspunsul
+	-am tinut minte local numarul de card din cadrul ultimei comenzi de login,
+acesta fiind propagat in requesturi serverlui in unele cazuri
+
+#Server
+	-am folosit un unordered_map pentru a tine in memorie informatiile userilor
+(pe langa cele din enunt si un bool active, pt a stii daca cardul respectiv este
+logat si un failed_attempts folosit in logica de unlock prezentata mai jos)
+	-am folosit un vector pentru a tine minte toate fidurile conexiunilor active
+dintre server si clienti
+	-am folosit multiplexare intre stdin(comanda quit, care vine de la tastatura),
+socketul TCP de listen(pe care ascult daca apar conexiuni noi), socketul de UDP(
+folosit pentru serviciul de unlock) si socketurile pe care serverul comunica cu 
+clientii. Astfel in functie de tipul de request si sursa acestuia, serverul 
+raspunde corespunzator acestora
+	-in functie de request, serverul cauta in map cardul de pe care s-a facut
+requestul si face actiunile corespunzatoare enuntului sau raspunde cu codul de
+eroare aferent
+	$Logica de unlock: in momentul in care sunt trimise requesturi de login
+pe acelasi card in care pinul este gresit de 3 ori(la fiecare cerere, se
+incrementeza failed_attempts) cardul va fi blocat. Acest lucru se poate intampla
+si daca 3 clienti diferinti trimit fiecare cate un request fie ca de pe acelasi
+client se dau acestea, chiar daca nu sunt in ordine, un exemplu se poate gasi
+in logfileul aferent acestei arhive. Acest contor se reseteaza numai dupa o
+cerere de unlock realizata cu succes.
+
+
+
+############
+Observatii
+	-kudos scheletului din labu' 8 de la care am pornit implementarea
+	-Am folosit cazuri de eroare suplimentare in cazul in care se introduc
+comenzi inexistente pe server/client
+	-CAZ1 UNLOCK> Cod eroare -4 in implementarea mea se afiseaza literalmente
+acest mesaj(ajungand la aceasta concluzie in urma citirii enuntului in care
+cazul urmator(CAZ2) a fost tratat in acelasi fel)
